@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Planning User Flows</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(45deg, #0f0c29, #302b63, #24243e);
+            background-size: 400% 400%;
+            animation: gradientShift 10s ease infinite;
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+            overflow-x: auto;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 30px;
+            padding: 40px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .header h1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.3rem;
+            font-weight: 300;
+        }
+        
+        .persona-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+        
+        .persona-card {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            border-radius: 25px;
+            padding: 35px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .persona-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #ffe066);
+            border-radius: 25px 25px 0 0;
+        }
+        
+        .persona-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.08));
+        }
+        
+        .persona-title {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .persona-emoji {
+            font-size: 2.5rem;
+            margin-right: 20px;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        }
+        
+        .persona-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            margin-bottom: 35px;
+            font-style: italic;
+            font-weight: 300;
+        }
+        
+        .flowchart {
+            position: relative;
+        }
+        
+        .flow-step {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+            padding: 25px 30px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            text-align: center;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            color: white;
+            font-weight: 500;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        
+        .flow-step:hover {
+            transform: scale(1.02);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.15));
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .trigger {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .trigger::before {
+            content: '⚡';
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.5rem;
+            opacity: 0.7;
+        }
+        
+        .action {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            box-shadow: 0 10px 30px rgba(78, 205, 196, 0.3);
+            position: relative;
+        }
+        
+        .action::before {
+            content: '🎯';
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.2rem;
+            opacity: 0.7;
+        }
+        
+        .decision {
+            background: linear-gradient(135deg, #ffe066, #ffb347);
+            color: #2d3748;
+            box-shadow: 0 10px 30px rgba(255, 224, 102, 0.3);
+            clip-path: polygon(15% 0%, 85% 0%, 100% 50%, 85% 100%, 15% 100%, 0% 50%);
+            margin: 30px 20px;
+            position: relative;
+        }
+        
+        .decision::before {
+            content: '🤔';
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 1.2rem;
+            opacity: 0.7;
+        }
+        
+        .result {
+            background: linear-gradient(135deg, #a8e6cf, #7fcdcd);
+            color: #2d3748;
+            box-shadow: 0 10px 30px rgba(168, 230, 207, 0.3);
+            position: relative;
+        }
+        
+        .result::before {
+            content: '✨';
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.2rem;
+            opacity: 0.7;
+        }
+        
+        .flow-connector {
+            display: flex;
+            justify-content: center;
+            margin: -15px 0;
+            position: relative;
+        }
+        
+        .arrow-line {
+            width: 3px;
+            height: 40px;
+            background: linear-gradient(180deg, #667eea, #764ba2);
+            border-radius: 2px;
+            position: relative;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .arrow-line::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: -7px;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 15px solid #764ba2;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scaleY(1); }
+            50% { opacity: 0.7; transform: scaleY(1.1); }
+        }
+        
+        .insight-box {
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+            padding: 25px;
+            border-radius: 20px;
+            margin-top: 35px;
+            position: relative;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3);
+        }
+        
+        .insight-box::before {
+            content: '💡';
+            position: absolute;
+            top: -15px;
+            left: 25px;
+            font-size: 2rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 8px 12px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .insight-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            margin-top: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .insight-text {
+            font-weight: 400;
+            line-height: 1.5;
+            opacity: 0.9;
+        }
+        
+        .additional-flows {
+            margin-top: 80px;
+        }
+        
+        .additional-title {
+            text-align: center;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #4ecdc4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 50px;
+        }
+        
+        .special-flow {
+            background: linear-gradient(145deg, rgba(240, 147, 251, 0.1), rgba(245, 87, 108, 0.1));
+            border: 1px solid rgba(240, 147, 251, 0.2);
+        }
+        
+        .special-flow::before {
+            background: linear-gradient(90deg, #f093fb, #f5576c);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .persona-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .persona-card {
+                padding: 25px;
+            }
+            
+            .flow-step {
+                padding: 20px;
+                min-height: 70px;
+            }
+            
+            .decision {
+                clip-path: none;
+                margin: 20px 0;
+            }
+        }
+        
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .floating-element {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .floating-element:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+        .floating-element:nth-child(2) { top: 40%; right: 20%; animation-delay: 2s; }
+        .floating-element:nth-child(3) { bottom: 30%; left: 30%; animation-delay: 4s; }
+        .floating-element:nth-child(4) { bottom: 20%; right: 10%; animation-delay: 1s; }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.7; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-elements">
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Meal Planning User Flows</h1>
+            <p>From Culinary Chaos to Kitchen Confidence</p>
+        </div>
+
+        <div class="persona-grid">
+            <!-- Time-Strapped Parent Flow -->
+            <div class="persona-card">
+                <h2 class="persona-title">
+                    <span class="persona-emoji">👨‍👩‍👧‍👦</span>
+                    The Time-Strapped Parent
+                </h2>
+                <p class="persona-subtitle">"The Sunday Reset" → Weekly Planning Flow</p>
+                
+                <div class="flowchart">
+                    <div class="flow-step trigger">
+                        <strong>CRISIS MOMENT</strong><br>
+                        Sunday 3pm: Kids napping<br>
+                        20 precious minutes of silence
+                    </div>
+                    
+                    <div class="flow-connector"><div class="arrow-line"></div></div>
+                    
+                    <div class="flow-step action">
+                        Opens app → "Quick family setup"<br>
+                        🏠 Chaos Mode: ACTIVATED
+                    </div>
+                    
+                    <div class="flow-connector"><div class="arrow-line"></div></div>
+                    
+                    <div class="flow-step decision">
+                        "What's your survival level?"<br>
+                        Barely Holding On | Manageable | Got This
+                    </div>
+                    
+                    <div class="flow-connector"><div class="arrow-line"></div></div>
+                    
+                    <div class="flow-step action">
+                        📸 Panic-snap fridge contents<br>
+                        🎤 "Ground beef, yogurt cups dying Thursday"
+                    </div>
+                    
+                    <div class="flow-connector"><div class="arrow-line"></div></div>
+                    
+                    <div class="flow-step result">
+                        AI Magic: 3 kid-approved meals<br>
+                        + 2 "emergency pizza alternatives"
+                    </div>
+                    
+                    <div class="flow-connector"><div class="arrow-line"></div></div>
+                    
+                    <div class="flow-step action">
+                        Reality Check: Swaps fancy for simple<br>
+                        "Herb-crusted salmon" → "Fish sticks"
+                    </div>
+                    
+                    <div class="flow-connector"><div class="arrow-line"></div></div>
+                    
+                    <div class="flow-step result">
+                        📱 Shopping list (only missing stuff)<br>
+                        ⏰ Smart reminders: "Defrost before chaos"
+                    </div>
+                </div>
+                
+                <div class="insight-box">
+                    <div class="insight-title">Human Truth:</div>
+                    <div class="insight-text">Parents need permission to be imperfect. 3-4 realistic meals + backup plans beats 7 Pinterest-worthy disasters.</div>
+                </div>
+            </div>
+
+            <!-- Health-Conscious Professional Flow -->
+            <div class="persona-card">
+                <h2 class="persona-title">
+                    <span class="persona-emoji">💪</span>
+                    The Health-Conscious Professional
+                </h2>
+                <p class="persona-subtitle">"The Panic Moment" → Real-Time SOS</p>
+                
+                <div class="flowchart">
+                    <div class="flow-step trigger">
+                        <strong>DISASTER STRIKES</strong><br>
+                        6:30pm: Hangry + exhausted<br>
+                        Meal prep = epic fail
+                    </div>
+                    
+                    <div class="flow-connector"><div class="arrow-line"></div></div>
+                    
+                    <div class="flow-step action">
+                        Emergency app launch<br>
+                        🚨 "SAVE ME FROM TAKEOUT"
+                    </div>
+                    
+                    <div class="flow-connector"><div class="arrow-line"></div></div>
+                    
+                    <div class="flow-step action">
+                        📍 GPS: "You're home (barely)"<br>
+                        ⏱️ Energy scan: "30 mins max or I die"
+                    </div>
+                    
+                    <div class="flow-connector"><div class="arrow-line"></div></div>
+                    
+                    <div class="flow-step action">
+                        📸 Fridge archaeology expedition<br>
+                        OR "What did I buy last weekend?"
+                    </div>
+                    
+                    <div class="flow-connector"><div class="arrow-line"></div></div>
+                    
+                    <div class="flow-step decision">
+                        AI calculates: Today's workout intensity<br>
+                        + Macro goals + Remaining brain cells
+                    </div>
+                    
+                    <div class="flow-connector"><div class="arrow-line"></div></div>
+                    
+                    <div class="flow-step result">
+                        "15-min protein power bowl"<br>
+                        Using: frozen salmon + pre-cooked quinoa + bagged greens
+                    </div>
+                    
+                    <div class="flow-connector"><div class="arrow-line"></div></div>
+                    
+                    <div class="flow-step result">
+                        ⏰ Foolproof timer steps<br>
+                        📊 Macro breakdown + 🛍️ "Order healthy backup"
+                    </div>
+                    
+                    <div class="flow-connector"><div class="arrow-line"></div></div>
+                    
+                    <div class="flow-step action">
+                        Post-meal reality check:<br>
+                        "Nailed it!" vs "Too ambitious for Tuesday"
+                    </div>
+                </div>
+                
+                <div class="insight-box">
+                    <div class="insight-title">Human Truth:</div>
+                    <div class="insight-text">Even health warriors need an escape plan. The app should normalize ordering smarter, not shame the user into cooking when they're spent.</div>
+                </div>
+            </div>
+
+            <!-- Couple Flow -->
+            <div class="persona-card">
+                <h2 class="persona-title">
+                    <span class="persona-emoji">👫</span>
+                    The Couple With Diverse Diets
+                </h2>
+                <p class="persona-subtitle">"The Negotiation Dance" → Harmony Creation</p>
+                
+                <div class="flowchart">
+                    <div class="flow-step trigger">
+                        <strong>THE STANDOFF</strong><br>
+                        "What should we eat this week?"<br>
+                        *crickets* *awkward staring*
+                    </div>
+                    
+                    <div class="flow-connector"><div class="arrow-line"></div></div>
+                    
+                    <div class="flow-step action">
+                        Partner A (vegetarian) opens shared space<br>
+                        Partner B (carnivore) gets notification
+                    </div>
+                    
+                    <div class="flow-connector"><div class="arrow-line"></div></div>
+                    
+                    <div class="flow-step action">
+                        🎨 "This week's vibe board"<br>
+                        Like Tinder, but for food moods
+                    </div>
+                    
+                    <div class="flow-connector"><div class="arrow-line"></div></div>
+                    
+                    <div class="flow-step action">
+                        Quick mood tags:<br>
+                        "Comfort food" | "Fresh & light" | "Zero effort"
+                    </div>
+                    
+                    <div class="flow-connector"><div class="arrow-line"></div></div>
+                    
+                    <div class="flow-step decision">
+                        AI finds the sweet spot:<br>
+                        🌮 "Mexican week = customizable happiness"
+                    </div>
+                    
+                    <div class="flow-connector"><div class="arrow-line"></div></div>
+                    
+                    <div class="flow-step result">
+                        Modular meal magic:<br>
+                        Base + A's toppings + B's protein = peace
+                    </div>
+                    
+                    <div class="flow-connector"><div class="arrow-line"></div></div>
+                    
+                    <div class="flow-step result">
+                        📝 Smart shopping split:<br>
+                        "Shared cart" + "A's extras" + "B's add-ons"
+                    </div>
+                    
+                    <div class="flow-connector"><div class="arrow-line"></div></div>
+                    
+                    <div class="flow-step action">
+                        Sunday team prep:<br>
+                        Together: bases | Solo: personal touches
+                    </div>
+                    
+                    <div class="flow-connector"><div class="arrow-line"></div></div>
+                    
+                    <div class="flow-step action">
+                        Daily vibe check:<br>
+                        "Still Mexican-ing?" + pivot options
+                    </div>
+                </div>
+                
+                <div class="insight-box">
+                    <div class="insight-title">Human Truth:</div>
+                    <div class="insight-text">Couples don't need identical meals, they need diplomatic solutions. Build bridges, don't force consensus on every single bite.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="additional-flows">
+            <h2 class="additional-title">Crisis Management Flows</h2>
+            
+            <div class="persona-grid">
+                <!-- Guilt Spiral Recovery -->
+                <div class="persona-card special-flow">
+                    <h2 class="persona-title">
+                        <span class="persona-emoji">😰</span>
+                        Guilt Spiral Recovery
+                    </h2>
+                    <p class="persona-subtitle">"The Waste Prevention SOS"</p>
+                    
+                    <div class="flowchart">
+                        <div class="flow-step trigger">
+                            <strong>SHAME SPIRAL BEGINS</strong><br>
+                            Opens fridge → wilted greens<br>
+                            "I'm terrible at this"
+                        </div>
+                        
+                        <div class="flow-connector"><div class="arrow-line"></div></div>
+                        
+                        <div class="flow-step action">
+                            🆘 "Save My Groceries" mode<br>
+                            No judgment, just solutions
+                        </div>
+                        
+                        <div class="flow-connector"><div class="arrow-line"></div></div>
+                        
+                        <div class="flow-step action">
+                            📸 Sad vegetable documentation<br>
+                            OR inventory damage assessment
+                        </div>
+                        
+                        <div class="flow-connector"><div class="arrow-line"></div></div>
+                        
+                        <div class="flow-step decision">
+                            AI triage: "Expires in 1-2 days"<br>
+                            + upcoming meal compatibility scan
+                        </div>
+                        
+                        <div class="flow-connector"><div class="arrow-line"></div></div>
+                        
+                        <div class="flow-step result">
+                            Immediate rescue missions:<br>
+                            "Tonight: spinach pasta" + "Tomorrow: smoothie"
+                        </div>
+                        
+                        <div class="flow-connector"><div class="arrow-line"></div></div>
+                        
+                        <div class="flow-step result">
+                            🧊 "Prep & freeze" alternatives<br>
+                            Turn guilt into future convenience
+                        </div>
+                        
+                        <div class="flow-connector"><div class="arrow-line"></div></div>
+                        
+                        <div class="flow-step result">
+                            💰 Victory tracking:<br>
+                            "You rescued $23 of groceries!"
+                        </div>
+                    </div>
+                    
+                    <div class="insight-box">
+                        <div class="insight-title">Human Truth:</div>
+                        <div class="insight-text">Shame kills motivation. Transform "I failed again" into "I'm learning to adapt" with concrete rescue strategies.</div>
+                    </div>
+                </div>
+
+                <!-- Energy Check-In Flow -->
+                <div class="persona-card special-flow">
+                    <h2 class="persona-title">
+                        <span class="persona-emoji">🔋</span>
+                        Energy Check-In
+                    </h2>
+                    <p class="persona-subtitle">"The Reality Adaptation Flow"</p>
+                    
+                    <div class="flowchart">
+                        <div class="flow-step trigger">
+                            <strong>MONDAY TRUTH BOMB</strong><br>
+                            Weekend plans derailed<br>
+                            Energy = 0%
+                        </div>
+                        
+                        <div class="flow-connector"><div class="arrow-line"></div></div>
+                        
+                        <div class="flow-step action">
+                            Gentle app ping:<br>
+                            "How's your week looking, human?"
+                        </div>
+                        
+                        <div class="flow-connector"><div class="arrow-line"></div></div>
+                        
+                        <div class="flow-step decision">
+                            Energy level selector:<br>
+                            "Thriving" | "Surviving" | "Send help"
+                        </div>
+                        
+                        <div class="flow-connector"><div class="arrow-line"></div></div>
+                        
+                        <div class="flow-step result">
+                            Auto-downgrade magic:<br>
+                            "Homemade curry" → "Store curry + rice"
+                        </div>
+                        
+                        <div class="flow-connector"><div class="arrow-line"></div></div>
+                        
+                        <div class="flow-step result">
+                            Strategic shortcuts activated:<br>
+                            "Rotisserie chicken = 2 meals worth"
+                        </div>
+                        
+                        <div class="flow-connector"><div class="arrow-line"></div></div>
+                        
+                        <div class="flow-step result">
+                            Shopping list pivot:<br>
+                            Removes complexity, adds convenience
+                        </div>
+                        
+                        <div class="flow-connector"><div class="arrow-line"></div></div>
+                        
+                        <div class="flow-step result">
+                            Permission to be human:<br>
+                            "This week = nourishment over perfection"
+                        </div>
+                    </div>
+                    
+                    <div class="insight-box">
+                        <div class="insight-title">Human Truth:</div>
+                        <div class="insight-text">Bad weeks are normal, not failures. The tool should be a supportive friend who helps you maintain dignity while eating well-ish.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
